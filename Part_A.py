@@ -1,6 +1,5 @@
 import pandas as pd
 import random
-import pprint
 
 
 class ClassDistributions:
@@ -15,7 +14,6 @@ class ClassDistributions:
         self.print_table()
 
     def update_table(self):
-
         for label in range(2):
             random.seed(0)
 
@@ -36,4 +34,11 @@ class ClassDistributions:
         print("-------------------------------------------------------------------------------------------------------")
 
 
+class Baselines:
+
+    def __init__(self, filepath):
+        self.df = pd.read_csv(filepath, header=0)
+
+
 exercise1 = ClassDistributions('data/olid-train.csv')
+exercise2 = Baselines('data/olid-train.csv')
