@@ -33,6 +33,7 @@ class ClassDistributions:
         print(self.ex1_table.to_string())
         print("\n")
 
+
 class Baselines:
 
     def __init__(self, train_path=None, test_path=None):
@@ -86,8 +87,8 @@ class Baselines:
             weighted_avg = precision_recall_fscore_support(self.baselines['gold'], self.baselines[baseline],
                                                            average='weighted', zero_division=0)
 
-            macro_list = [macro_avg[0], macro_avg[1], macro_avg[2]]
-            weighted_list = [weighted_avg[0], weighted_avg[1], weighted_avg[2]]
+            macro_list = [round(macro_avg[0], 2), round(macro_avg[1], 2), round(macro_avg[2], 2)]
+            weighted_list = [round(weighted_avg[0], 2), round(weighted_avg[1], 2), round(weighted_avg[2], 2)]
             data.append(macro_list)
             data.append(weighted_list)
 
@@ -105,7 +106,6 @@ class Baselines:
         print("-------------------------------------------------------------------------------------------------------")
         print("NOT SURE ABOUT THE VALUES FOR NOW. DOUBLE CHECK AGAIN")
         print("-------------------------------------------------------------------------------------------------------")
-
 
 
 exercise1 = ClassDistributions('data/olid-train.csv')
