@@ -4,6 +4,9 @@ from sklearn.metrics import precision_recall_fscore_support
 
 
 class ClassDistributions:
+    """
+    Exercise 1 of Part A of NLP Assignment 2
+    """
 
     def __init__(self, filepath):
         self.df = pd.read_csv(filepath, header=0)
@@ -15,6 +18,10 @@ class ClassDistributions:
         self.print_table()
 
     def update_table(self):
+        """
+        creates a table for exercise 1 and calculates # of occurrences, frequency, and an example
+        :return: the previously mentioned table
+        """
         for label in range(2):
             random.seed(0)
 
@@ -26,6 +33,9 @@ class ClassDistributions:
             self.ex1_table.loc[len(self.ex1_table.index)] = [label, occurr, freq[1], example]
 
     def print_table(self):
+        """
+        :return: just some print statements
+        """
         print("-------------------------------------------------------------------------------------------------------")
         print("""
         1.  Class distributions (1 point)
@@ -35,6 +45,9 @@ class ClassDistributions:
 
 
 class Baselines:
+    """
+    Exercise 2 of Part A of NLP Assignment 2
+    """
 
     def __init__(self, train_path=None, test_path=None):
 
@@ -48,6 +61,10 @@ class Baselines:
         self.print_table(table=self.ex2_table)
 
     def get_majority(self):
+        """
+        calculates how often each label occurs and returns the more frequent one
+        :return: the label that occurs more often
+        """
         major = (0, 0)
 
         for label in self.train_set['labels'].value_counts().index.to_list():
@@ -57,13 +74,19 @@ class Baselines:
         return major[0]
 
     def majority_baseline(self):
-
+        """
+        updates the predictions dictionary with a list that serves as the predictions for the test_set
+        :return: the majority baseline
+        """
         majority_label = self.get_majority()
         majority_prediction = [majority_label for i in range(len(self.test_set['labels']))]
-
         self.baselines['majority'] = majority_prediction
 
     def random_baseline(self):
+        """
+        updates the predictions dictionary with a list that serves as the predictions for the test_set
+        :return: the random baseline
+        """
         random.seed(0)
 
         random_prediction = [random.choice(self.test_set['labels'].value_counts().index.to_list()) for i in
@@ -71,7 +94,11 @@ class Baselines:
         self.baselines['random'] = random_prediction
 
     def baseline_table(self, baselines):
-
+        """
+        calculates the precision, recall & f1 for macro and weighted averages for each baseline
+        :param baselines: the baselines that should be appended to the table
+        :return: a dataframe (aka the table)
+        """
         multi_index = ["Macro_avg", "Weighted_avg"]
         cols = pd.MultiIndex.from_tuples([("Random", "Precision"),
                                           ("Random", "Recall"),
@@ -96,7 +123,13 @@ class Baselines:
         df_table = pd.DataFrame(data=baseline_data, columns=cols, index=multi_index)
         return df_table
 
-    def print_table(self, table):
+    @staticmethod
+    def print_table(table):
+        """
+        just some print statements
+        :param table: the table to be printed
+        :return: output
+        """
         print("-------------------------------------------------------------------------------------------------------")
         print("""
         2.  Baselines (1 point)
@@ -104,9 +137,9 @@ class Baselines:
         print(table.to_string())
         print("\n")
         print("-------------------------------------------------------------------------------------------------------")
-        print("NOT SURE ABOUT THE VALUES FOR NOW. DOUBLE CHECK AGAIN")
-        print("-------------------------------------------------------------------------------------------------------")
 
 
+print("-------------------------------------------------------------------------------------------------------")
+print("Part A: Fine-tune BERT for offensive language detection (7 points)")
 exercise1 = ClassDistributions('data/olid-train.csv')
 exercise2 = Baselines(train_path='data/olid-train.csv', test_path='data/olid-test.csv')
