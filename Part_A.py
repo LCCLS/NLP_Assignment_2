@@ -57,28 +57,29 @@ class Baselines:
 
         self.majority_baseline()
         self.random_baseline()
+        self.class_baselines()
         self.ex2_table = self.baseline_table(["random", "majority"])
         self.print_table(table=self.ex2_table)
 
-    #from Paola: This can be done a little quicker with the "mode" method, i put the code in "majority_baseline"
-    #def get_majority(self):
-        #"""
-        #calculates how often each label occurs and returns the more frequent one
-        #:return: the label that occurs more often
-        #"""
-        #major = (0, 0)
+    # from Paola: This can be done a little quicker with the "mode" method, i put the code in "majority_baseline"
+    # def get_majority(self):
+    # """
+    # calculates how often each label occurs and returns the more frequent one
+    #:return: the label that occurs more often
+    # """
+    # major = (0, 0)
 
-        #for label in self.train_set['labels'].value_counts().index.to_list():
-            #if self.train_set['labels'].value_counts()[label] > major[1]:
-                #major = label, self.train_set['labels'].value_counts()[label]
-        #return major[0]
+    # for label in self.train_set['labels'].value_counts().index.to_list():
+    # if self.train_set['labels'].value_counts()[label] > major[1]:
+    # major = label, self.train_set['labels'].value_counts()[label]
+    # return major[0]
 
     def majority_baseline(self):
         """
         updates the predictions dictionary with a list that serves as the predictions for the test_set
         :return: the majority baseline
         """
-        #majority_label = self.get_majority()
+        # majority_label = self.get_majority()
         majority_label = self.train_set["labels"].mode()[0]
         majority_prediction = [majority_label for i in range(len(self.test_set['labels']))]
         self.baselines['majority'] = majority_prediction
@@ -94,13 +95,18 @@ class Baselines:
                              range(len(self.test_set['labels']))]
         self.baselines['random'] = random_prediction
 
+    def class_baselines(self):
+
+        for label in set(self.test_set['labels'].values):
+            self.baselines[f'class{label}'] = [label for i in range(len(self.test_set['labels']))]
+
     def baseline_table(self, baselines):
         """
         calculates the precision, recall & f1 for macro and weighted averages for each baseline
         :param baselines: the baselines that should be appended to the table
         :return: a dataframe (aka the table)
         """
-        multi_index = ["Macro_avg", "Weighted_avg"]
+        multi_index = ["0", "1", "Macro_avg", "Weighted_avg"]
         cols = pd.MultiIndex.from_tuples([("Random", "Precision"),
                                           ("Random", "Recall"),
                                           ("Random", "F1"),
@@ -117,10 +123,23 @@ class Baselines:
 
             macro_list = [round(macro_avg[0], 2), round(macro_avg[1], 2), round(macro_avg[2], 2)]
             weighted_list = [round(weighted_avg[0], 2), round(weighted_avg[1], 2), round(weighted_avg[2], 2)]
+
+            print("macro", macro_list)
+            print("weighted", weighted_list)
+
             data.append(macro_list)
             data.append(weighted_list)
 
-        baseline_data = [data[0] + data[2], data[1] + data[3]]
+        class0 = precision_recall_fscore_support(self.baselines["gold"], self.baselines["class0"],
+                                                 average='binary', pos_label=0)
+        class1 = precision_recall_fscore_support(self.baselines["gold"], self.baselines["class1"],
+                                                 average='binary', pos_label=1)
+
+        data.append([round(class0[0], 2), round(class0[1], 2), round(class0[2], 2)])
+        data.append([round(class1[0], 2), round(class1[1], 2), round(class1[2], 2)])
+
+        print(data)
+        baseline_data = [data[4] + data[4], data[5] + data[5], data[0] + data[2], data[1] + data[3]]
         df_table = pd.DataFrame(data=baseline_data, columns=cols, index=multi_index)
         return df_table
 
