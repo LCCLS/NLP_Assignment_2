@@ -124,9 +124,6 @@ class Baselines:
             macro_list = [round(macro_avg[0], 2), round(macro_avg[1], 2), round(macro_avg[2], 2)]
             weighted_list = [round(weighted_avg[0], 2), round(weighted_avg[1], 2), round(weighted_avg[2], 2)]
 
-            print("macro", macro_list)
-            print("weighted", weighted_list)
-
             data.append(macro_list)
             data.append(weighted_list)
 
@@ -138,7 +135,6 @@ class Baselines:
         data.append([round(class0[0], 2), round(class0[1], 2), round(class0[2], 2)])
         data.append([round(class1[0], 2), round(class1[1], 2), round(class1[2], 2)])
 
-        print(data)
         baseline_data = [data[4] + data[4], data[5] + data[5], data[0] + data[2], data[1] + data[3]]
         df_table = pd.DataFrame(data=baseline_data, columns=cols, index=multi_index)
         return df_table
